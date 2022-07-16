@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>rabid ball 2</title>
+</head>
+<body>
+<script type="text/javascript" src="jurassic.js"></script>
+<script type="text/javascript">
+
+var game = new Jurassic_Game(100, 100, 'blue');
+
+var keyboard = game.keyboard();
+
+var camera = game.camera;
+
+var mouse = game.mouse();
+
+var canvasWidth = game.canvasWidth();
+var canvasHeight = game.canvasHeight();
+
+game.setFullScreen();
+
+var rect = new game.Rect({
+x : 200,
+y : 200,
+height : 300,
+width : 300,
+color : 'yellow',
+});
+
+var rect2 = new game.Rect({
+x: 450,
+y: 450,
+height: 100,
+width: 100,
+color: 'red',	
+});
+
+var a = new game.AnimatedImage({
+x : 50,
+y : 50,
+width : 90,
+height : 90,
+rendering_x : 0,
+rendering_y : 0,
+rendering_width : 85,
+rendering_height : 57,
+file : 'спрайт.gif',
+time : 1,
+quantity_of_times : 4,
+shift: 85,
+delay: 10,
+});
+
+var map = new game.Map({
+file: 'тайлсет.png',
+width: 5,
+height: 2,
+line: 1,
+quantity_of_tiles_in_line: 8,
+tile_width: 32,
+tile_height: 32,
+pointOfRendering_x: 0,
+pointOfRendering_y: 0,
+number_of_tile_in_line: 1
+});
+
+map.setSymbols(['0', '1']);
+
+game.createCycle('1', function () {
+rect.draw();
+rect2.draw();
+a.draw();
+map.draw([
+"01000",
+"00100"
+]);
+
+});
+
+game.startCycle('1');
+
+</script>
+</body>
+</html>
