@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Square Life</title>
+</head>
+<body>
+<script type="text/javascript" src="jurassic.js"></script>
+<script type="text/javascript">
+
+var game = new Jurassic_Game(1280, 640, 'black');
+
+var keyboard = game.keyboard();
+
+var camera = game.camera;
+
+var mouse = game.mouse();
+
+var canvasWidth = game.canvasWidth();
+var canvasHeight = game.canvasHeight();
+
+var rects = [];
+var colors = ['red', 'green', 'green'];
+
+for (var i = -2000; i < 2000; i += 50)
+	for (var j = -2000; j < 2000; j += 50)
+		rects.push(new game.Rect({
+			y: i,
+			x: j,
+			width: 50,
+			height: 50,
+			color: colors[game.random(0, 2)]
+		}));
+
+var hero = new game.Rect({
+x: 640,
+y: 320,
+width: 100,
+height: 100,
+color: 'blue'
+});
+
+var life = 1000;
+var score = -9;
+var bulk = game.loadAudio(['бульк.mp3'], 1);
+
+game.createCycle('main', function () {
+life -= 0.5;
+for (var i in rects) {
+if (rects[i].inCamera())
+rects[i].draw();
+if (hero.intersect(rects[i]) && rects[i].color == 'red') {
+	life -= 20;
+	rects.splice(i, 1);
+	score++;
+	bulk.play();
+}
+if (hero.intersect(rects[i]) && rects[i].color == 'green') {
+	life += 20;
+	rects.splice(i, 1);
+	score++;
+	bulk.play();
+}
+}
+hero.draw();
+game.drawText(hero.x - 640, hero.y - 220, 'Score: ' + score, 'blue', '40px Arial');
+game.drawRect(hero.x - 640, hero.y - 320, life, 50, 'blue');
+if (keyboard.down('UP')) {
+	camera.move(0, -2);
+	hero.move(0, -2);
+}
+if (keyboard.down('DOWN')) {
+	camera.move(0, 2);
+	hero.move(0, 2);
+}
+if (keyboard.down('RIGHT')) {
+	camera.move(2, 0);
+	hero.move(2, 0);
+}
+if (keyboard.down('LEFT')) {
+	camera.move(-2, 0);
+	hero.move(-2, 0);
+}
+if (rects.length == 0)
+	game.startCycle('victory');
+if (life <= 0)
+game.startCycle('gameover');
+});
+
+game.createCycle('gameover', function () {
+game.drawText(hero.x - 290, hero.y, 'GAME OVER', 'red', '50px Arial');
+game.drawText(hero.x - 240, hero.y + 80, 'Press Enter to replay', 'green', '100px Arial');
+if (keyboard.press('ENTER'))
+location.reload(true);
+});
+
+game.createCycle('victory', function () {
+game.drawText(hero.x - 120, hero.y, 'You win!', 'green', '100px Arial');
+});
+
+game.startCycle('main');
+
+</script>
+</body>
+</html>
